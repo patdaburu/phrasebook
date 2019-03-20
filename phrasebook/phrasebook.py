@@ -8,6 +8,7 @@
 
 Store phrases (SQL, messages, what-have-you) alongside your modules.
 """
+from collections import Mapping
 import inspect
 from pathlib import Path
 from string import Template
@@ -19,7 +20,9 @@ PHRASES_SUFFIX = '.phr'  #: the standard suffix for phrasebook directories
 
 
 class Phrasebook:
-
+    """
+    A phrasebook is an indexed collection of string templates.
+    """
     def __init__(
             self,
             path: str or Path = None,
@@ -47,18 +50,9 @@ class Phrasebook:
             )
         ).with_suffix(PHRASES_SUFFIX)
 
-        # #: the path to the phrases directory
-        # # If the path is the path to an existing file...
-        # if self._path.is_file():
-        #     # ...assume we are actually looking for a directory in the same
-        #     # location
-        #     self._path = (
-        #             self._path.parent + self._path.stem
-        #     ).with_suffix(PHRASES_SUFFIX)
-
         # We should also keep track of the file suffixes we expect to find.
         self._suffixes: Tuple[str] = tuple(
-            s if s.startswith('.') else f".{s}"
+            (s if s.startswith('.') else f".{s}").lower()
             for s in (
                 suffixes if suffixes else []
             ) if s
@@ -81,6 +75,9 @@ class Phrasebook:
         return self._suffixes
 
     def items(self) -> ItemsView[str, Template]:
+        """
+        Get the key-value pairs.
+        """
         return self._phrases.items()
 
     def _load_dir(self, path: Path, prefix: str = ''):
@@ -99,21 +96,44 @@ class Phrasebook:
                 self._load_dir(sub, prefix=f"{prefix}{sub.name}.")
             elif (
                     sub.is_file()
-                    and not self._suffixes or sub.suffix in self.suffixes
+                    and (
+                            not self._suffixes
+                            or sub.suffix.lower() in self.suffixes
+                    )
             ):
                 # Otherwise, if it's a file and we either have no preference
                 # for suffixes, or it's suffix is one we recognize, create a
                 # template for it and place it into the dictionary of phrases.
                 self._phrases[f"{prefix}{sub.stem}"] = Template(sub.read_text())
 
-    def _load_dict(self, dict_: Dict[str, Union[str, Dict]], prefix: str = ''):
-        raise NotImplementedError()
+    def _load_dict(self, dict_: Mapping, prefix: str = ''):
+        """
+        Recursively load a dictionary of phrases.
+
+        :param dict_: the phrases dictionary
+        :param prefix: the prefix to prepend to all the phrase keys in the
+            phrase dictionary
+        """
+        # Let's look at each of the items...
+        for k, v in dict_.items():
+            # If the value appears to be a dictionary...
+            if isinstance(v, Mapping):
+                # ...load it.
+                self._load_dict(v, prefix=f"{prefix}{k}.")
+            else:
+                # Otherwise, we assume it's either a template, or string-like.
+                self._phrases[f"{prefix}{k}"] = (
+                    v if isinstance(v, Template)
+                    else Template(str(v))
+                )
 
     def _load_file(self, path: Path):
-        _phrases = toml.loads(path.read_text())
-        # TODO: "Flatten" the dictionary.
-        _phrases = {k: Template(v) for k, v in _phrases.items()}
-        self._phrases.update(_phrases)
+        """
+        Load a dictionary of phrases from a file.
+
+        :param path: the path to the file
+        """
+        self._load_dict(toml.loads(path.read_text()))
 
     def load(self) -> 'Phrasebook':
         """

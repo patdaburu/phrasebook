@@ -1,2 +1,6 @@
 txt1 = "Hello, $NAME."
 txt2 = "Hello, $YOURNAME.  My name is $MYNAME."
+
+[sub1]
+txt1 = "Hello again, $NAME"
+txt2 = "Hello again, $YOURNAME.  My name is still $MYNAME."
