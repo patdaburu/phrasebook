@@ -8,22 +8,22 @@
 
 Store phrases (SQL, messages, what-have-you) alongside your modules.
 """
+import inspect
 from pathlib import Path
 from string import Template
-from typing import Dict, Iterable, Tuple
+from typing import Dict, Iterable, ItemsView, Tuple
+import toml
 
 
 PHRASES_SUFFIX = '.phr'  #: the standard suffix for phrasebook directories
 
 
-# TODO: Read https://www.thoughtco.com/pythons-string-templates-2813675
-
 class Phrasebook:
 
     def __init__(
             self,
-            path: str or Path,
-            suffixes: Iterable[str]
+            path: str or Path = None,
+            suffixes: Iterable[str] = None
     ):
         """
 
@@ -37,15 +37,24 @@ class Phrasebook:
         """
         # Let's figure out where the phrases are kept.
         self._path: Path = (
-            path if isinstance(dir, Path) else Path(path)
-        ).expanduser().resolve()  #: the path to the phrases directory
-        # If the path is the path to an existing file...
-        if self._path.is_file():
-            # ...assume we are actually looking for a directory in the same
-            # location
-            self._path = (
-                    self._path.parent + self._path.stem
-            ).with_suffix(PHRASES_SUFFIX)
+            (
+                path if isinstance(dir, Path) else Path(path)
+            ).expanduser().resolve()
+        ) if path else Path(
+            getattr(
+                inspect.getmodule(inspect.currentframe().f_back),
+                '__file__'
+            )
+        ).with_suffix(PHRASES_SUFFIX)
+
+        # #: the path to the phrases directory
+        # # If the path is the path to an existing file...
+        # if self._path.is_file():
+        #     # ...assume we are actually looking for a directory in the same
+        #     # location
+        #     self._path = (
+        #             self._path.parent + self._path.stem
+        #     ).with_suffix(PHRASES_SUFFIX)
 
         # We should also keep track of the file suffixes we expect to find.
         self._suffixes: Tuple[str] = tuple(
@@ -53,7 +62,7 @@ class Phrasebook:
             for s in (
                 suffixes if suffixes else []
             ) if s
-        )
+        ) if suffixes else ()
 
         self._phrases: Dict[str, Template] = {}  #: the phrase templates
 
@@ -71,9 +80,12 @@ class Phrasebook:
         """
         return self._suffixes
 
-    def _load(self, path: Path, prefix: str = ''):
+    def items(self) -> ItemsView[str, Template]:
+        return self._phrases.items()
+
+    def _load_dir(self, path: Path, prefix: str = ''):
         """
-        Recursively load
+        Recursively load a phrases directory.
 
         :param path: the directory path to load
         :param prefix: the prefix to prepend to all the phrase keys in the
@@ -84,7 +96,7 @@ class Phrasebook:
             # If this item is a directory, append its name to the current
             # prefix and load it recursively.
             if sub.is_dir():
-                self._load(sub, prefix=f"{prefix}{sub.name}.")
+                self._load_dir(sub, prefix=f"{prefix}{sub.name}.")
             elif (
                     sub.is_file()
                     and not self._suffixes or sub.suffix in self.suffixes
@@ -92,7 +104,7 @@ class Phrasebook:
                 # Otherwise, if it's a file and we either have no preference
                 # for suffixes, or it's suffix is one we recognize, create a
                 # template for it and place it into the dictionary of phrases.
-                self._phrases[f"{prefix}sub.stem"] = Template(sub.read_text())
+                self._phrases[f"{prefix}{sub.stem}"] = Template(sub.read_text())
 
     def load(self) -> 'Phrasebook':
         """
@@ -100,8 +112,14 @@ class Phrasebook:
 
         :return: this instance
         """
-        self._load(self._path)
-        return self
+        # If the path is a single file...
+        if self._path.is_file():
+            # ...just parse it and load the values.
+            self._phrases.update(toml.loads(self._path.read_text()))
+        else:
+            # Otherwise, recursively load the directory.
+            self._load_dir(self._path)
+            return self
 
     def substitute(
             self,
