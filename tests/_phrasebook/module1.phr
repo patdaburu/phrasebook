@@ -1,0 +1,2 @@
+txt1 = "Hello, $NAME."
+txt2 = "Hello, $YOURNAME.  My name is $MYNAME."

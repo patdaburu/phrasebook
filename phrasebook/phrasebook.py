@@ -11,7 +11,7 @@ Store phrases (SQL, messages, what-have-you) alongside your modules.
 import inspect
 from pathlib import Path
 from string import Template
-from typing import Dict, Iterable, ItemsView, Tuple
+from typing import Dict, Iterable, ItemsView, Tuple, Union
 import toml
 
 
@@ -106,20 +106,27 @@ class Phrasebook:
                 # template for it and place it into the dictionary of phrases.
                 self._phrases[f"{prefix}{sub.stem}"] = Template(sub.read_text())
 
+    def _load_dict(self, dict_: Dict[str, Union[str, Dict]], prefix: str = ''):
+        raise NotImplementedError()
+
+    def _load_file(self, path: Path):
+        _phrases = toml.loads(path.read_text())
+        # TODO: "Flatten" the dictionary.
+        _phrases = {k: Template(v) for k, v in _phrases.items()}
+        self._phrases.update(_phrases)
+
     def load(self) -> 'Phrasebook':
         """
         Load the phrases.
 
         :return: this instance
         """
-        # If the path is a single file...
-        if self._path.is_file():
-            # ...just parse it and load the values.
-            self._phrases.update(toml.loads(self._path.read_text()))
-        else:
-            # Otherwise, recursively load the directory.
-            self._load_dir(self._path)
-            return self
+        # Figure out which loader method is appropriate for the path.
+        _load_fn = self._load_file if self._path.is_file() else self._load_dir
+        # Load 'em up!
+        _load_fn(self._path)
+        # Always return the current instance.
+        return self
 
     def substitute(
             self,
