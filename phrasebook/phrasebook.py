@@ -203,9 +203,8 @@ class Phrasebook:
                     default if isinstance(default, Template)
                     else Template(default)
                 )
-            else:
-                # Otherwise, the caller gets `None`
-                return None
+            # Otherwise, the caller gets `None`
+            return None
 
     def gets(
             self,
