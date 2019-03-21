@@ -38,7 +38,7 @@ class Phrasebook:
 
             `Python's String Templates <https://bit.ly/2FdnQ61>`_
         """
-        # Let's figure out where the phrases are kept.
+        # Let's figure out where the phrases are kept. (Part One)
         self._path: Path = (
             (
                 path if isinstance(dir, Path) else Path(path)
@@ -57,6 +57,21 @@ class Phrasebook:
                 suffixes if suffixes else []
             ) if s
         ) if suffixes else ()
+
+        # Let's figure out where the phrases are kept. (Part Two)
+        if not self._path.exists():  # Say the prescribed path does not exist.
+            # Let's look for siblings...
+            _parent: Path = self._path.parent
+            # ...that may have the same name (stem)...
+            for _item in [
+                    i for i in _parent.iterdir()
+                    if i.stem == self._path.stem
+            ]:
+                # ...but one of the prescribed suffixes (case-insensitive)...
+                if _item.suffix.lower() in self._suffixes:
+                    # ...and if we find such a thing, that's the new path.
+                    self._path = _item
+                    break
 
         self._phrases: Dict[str, Template] = {}  #: the phrase templates
 
