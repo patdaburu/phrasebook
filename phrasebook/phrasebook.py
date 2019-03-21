@@ -12,7 +12,7 @@ from collections import Mapping
 import inspect
 from pathlib import Path
 from string import Template
-from typing import Dict, Iterable, ItemsView, Tuple, Union
+from typing import Dict, Iterable, ItemsView, Tuple
 import toml
 
 
@@ -97,8 +97,8 @@ class Phrasebook:
             elif (
                     sub.is_file()
                     and (
-                            not self._suffixes
-                            or sub.suffix.lower() in self.suffixes
+                        not self._suffixes
+                        or sub.suffix.lower() in self.suffixes
                     )
             ):
                 # Otherwise, if it's a file and we either have no preference
@@ -176,15 +176,18 @@ class Phrasebook:
             else template.substitute(**kwargs)
         )
 
-    def get(self, phrase: str, default: str or Template = None) -> Template:
+    def get(
+            self,
+            phrase: str,
+            default: str or Template = None
+    ) -> Template or None:
         """
         Get a phrase template.
 
         :param phrase: the name of the phrase template
         :param default: a default template or string
-        :return: the template (or the default)
-        :raises KeyError: if the phrase does not exist and the caller does not
-            provide a default
+        :return: the template (or the default), or `None` if no template
+            is defined
 
         .. seealso::
 
@@ -194,30 +197,34 @@ class Phrasebook:
             return self._phrases[phrase]
         except KeyError:
             # If we were supplied with a default...
-            if default:
+            if default is not None:
                 # ...return that.
                 return (
                     default if isinstance(default, Template)
                     else Template(default)
                 )
             else:
-                raise  # Otherwise, we just pass along the exception.
+                # Otherwise, the caller gets `None`
+                return None
 
-    def gets(self, phrase: str, default: str or Template):
+    def gets(
+            self,
+            phrase: str,
+            default: str or Template = None
+    ) -> str or None:
         """
         Get a phrase template string.
 
         :param phrase: the name of the phrase template
         :param default: a default template or string
-        :return: the template (or the default)
-        :raises KeyError: if the phrase does not exist and the caller does not
-            provide a default
+        :return: the template (or the default), or `None` if no template
+            is defined
         """
         try:
             # See if the `get` method can give us a `Template` from which we
             # may derive a string.
             return self.get(phrase=phrase, default=default).template
-        except KeyError:
+        except (KeyError, AttributeError):
             # If we got a `KeyError` (because the phrase wan't found) or an
             # `AttributeError` (likely because the phrase is found but it's
             # value is `None`), we may be able to revert to the default.
@@ -226,5 +233,8 @@ class Phrasebook:
                     default.template if isinstance(default, Template)
                     else default
                 )
-            # Otherwise, raise the exception.
-            raise
+            # Otherwise, return None.
+            return None
+
+    def __contains__(self, item):
+        return item in self._phrases
