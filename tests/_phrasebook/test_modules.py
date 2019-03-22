@@ -7,7 +7,8 @@ from .modules import (
     module2,
     module3,
     module4,
-    module5
+    module5,
+    module6
 )
 
 
@@ -38,16 +39,24 @@ from .modules import (
         ),
         (
             module4.phrasebook,
-            'module 4 (SQL) phrasebook',
+            "module 4 ('.sql' suffix) phrasebook",
             {
                 'query1': 'SELECT $COLUMN_1 FROM $TABLE'
             }
         ),
         (
             module5.phrasebook,
-            'module 5 (SQL) phrasebook',
+            "module 5 ('.sql' suffix) phrasebook",
             {
                 'query1': 'SELECT $COLUMN_1 FROM $TABLE'
+            }
+        ),
+        (
+            module6.phrasebook,
+            'module 6 (SqlPhrasebook) phrasebook',
+            {
+                'query1': 'SELECT $COLUMN_1 FROM $TABLE',
+                'query2': 'SELECT $COLUMN_1 FROM $TABLE WHERE $COLUMN_1 = $VALUE'
             }
         )
     ]

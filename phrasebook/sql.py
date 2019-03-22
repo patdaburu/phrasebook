@@ -34,6 +34,6 @@ class SqlPhrasebook(Phrasebook):
             `Python's String Templates <https://bit.ly/2FdnQ61>`_
         """
         super().__init__(
-            path=path,
+            path=self._resolve_path(path),
             suffixes=suffixes
         )
