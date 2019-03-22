@@ -56,7 +56,8 @@ from .modules import (
             'module 6 (SqlPhrasebook) phrasebook',
             {
                 'query1': 'SELECT $COLUMN_1 FROM $TABLE',
-                'query2': 'SELECT $COLUMN_1 FROM $TABLE WHERE $COLUMN_1 = $VALUE'
+                'query2':
+                    'SELECT $COLUMN_1 FROM $TABLE WHERE $COLUMN_1 = $VALUE'
             }
         )
     ]
