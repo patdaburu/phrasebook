@@ -39,16 +39,6 @@ class Phrasebook:
             `Python's String Templates <https://bit.ly/2FdnQ61>`_
         """
         # Let's figure out where the phrases are kept. (Part One)
-        # self._path: Path = (
-        #     (
-        #         path if isinstance(dir, Path) else Path(path)
-        #     ).expanduser().resolve()
-        # ) if path else Path(
-        #     getattr(
-        #         inspect.getmodule(inspect.currentframe().f_back),
-        #         '__file__'
-        #     )
-        # ).with_suffix(PHRASES_SUFFIX)
         self._path: Path = self._resolve_path(path)
 
         # We should also keep track of the file suffixes we expect to find.

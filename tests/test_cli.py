@@ -16,6 +16,7 @@ from phrasebook import __version__
 # To learn more about testing Click applications, visit the link below.
 # http://click.pocoo.org/5/testing/
 
+
 def test_version_displays_library_version():
     """
     Arrange/Act: Run the `version` subcommand.
@@ -36,14 +37,3 @@ def test_verbose_output():
     result: Result = runner.invoke(cli.cli, ['-v', 'version'])
     assert 'Verbose' in result.output.strip(), \
         'Verbose logging should be indicated in output.'
-
-
-def test_hello_displays_expected_message():
-    """
-    Arrange/Act: Run the `version` subcommand.
-    Assert:  The output matches the library version.
-    """
-    runner: CliRunner = CliRunner()
-    result: Result = runner.invoke(cli.cli, ['hello'])
-    assert 'phrasebook' in result.output.strip(), \
-        "'Hello' messages should contain the CLI name."
