@@ -4,7 +4,7 @@ Store phrases (SQL, messages, what-have-you) alongside your modules.
 
 ## Project Features
 
-* [phrasebook](http://www.comingsoon.net)
+* [phrasebook](https://pypi.org/project/phrasebook/)
 * a starter [Click](http://click.pocoo.org/5/) command-line application
 * automated unit tests you can run with [pytest](https://docs.pytest.org/en/latest/)
 * a [Sphinx](http://www.sphinx-doc.org/en/master/) documentation project
