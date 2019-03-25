@@ -1,0 +1,1 @@
+query1 = "SELECT $COLUMN_1 FROM $TABLE"

@@ -15,3 +15,16 @@ API Documentation
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. automodule:: phrasebook.phrasebook
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+phrasebook.sql
+--------------
+
+.. automodule:: phrasebook.sql
+    :members:
+    :undoc-members:
+    :show-inheritance:

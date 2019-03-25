@@ -72,14 +72,6 @@ def cli(info: Info,
         )
     info.verbose = verbose
 
-@cli.command()
-@pass_info
-def hello(_: Info):
-    """
-    Say 'hello' to the nice people.
-    """
-    click.echo(f"phrasebook says 'hello'")
-
 
 @cli.command()
 def version():
