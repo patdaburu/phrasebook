@@ -11,10 +11,14 @@
 API Documentation
 =================
 
-.. automodule:: phrasebook
-    :members:
-    :undoc-members:
-    :show-inheritance:
+
+phrasebook
+----------
+
+.. note::
+
+    Most of the functions and objects defined in the `phrasebook.phrasebook` module are actually
+    available in the top-level (`phrasebook`) namespace.
 
 .. automodule:: phrasebook.phrasebook
     :members:
