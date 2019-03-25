@@ -6,7 +6,7 @@ Store phrases (SQL, messages, what-have-you) alongside your modules.
 Project Features
 ----------------
 
--  `phrasebook <https://pypi.org/project/phrasebook/>`__
+-  `phrasebook <https://phrasebook.readthedocs.io/en/latest/index.html#>`__
 -  a starter `Click <http://click.pocoo.org/5/>`__ command-line
    application
 -  automated unit tests you can run with
