@@ -113,5 +113,30 @@ Phrasebook Directory
 Specifying the Path
 -------------------
 
-TODO
+You may not always want your phrasebooks to reside alongside your modules; sometimes you may want
+to share phrasebooks across modules.  In those cases, you can provide a
+:py:class:`path <phrasebook.phrasebook.Phrasebook>` argument to indicate the file or directory that
+contains your phrases.
 
+.. code-block:: python
+
+    phrasebook = Phrasebook(path='/path/to/my/phrases.phr').load()
+
+Specifying Suffixes
+-------------------
+
+If you have a phrases directory that contains many different types of files, you can indicate which
+files you want to include by specifying their extensions using the
+:py:class:`suffixes <phrasebook.phrasebook.Phrasebook>` constructor argument.  You can use this
+convention if you need to put other types of files (perhaps something like a `README.md` file that
+provides some documentation for the phrases) alongside the phrase files.
+
+.. code-block:: python
+
+    phrasebook = Phrasebook(suffixes=['.sql']).load()
+
+.. note::
+
+    The example above demonstrates how you might create a phrase book that is particular to `SQL`
+    phrases, but there is also a built-in :py:class:`SqlPhrasebook <phrasebook.sql.SqlPhrasebook>`
+    that you can use for that particular purpose.
