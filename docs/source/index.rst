@@ -17,6 +17,7 @@ Store phrases (SQL, messages, what-have-you) alongside your modules.
    :caption: Contents:
 
    getting_started
+   tutorial
    cli
    api
    development

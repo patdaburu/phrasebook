@@ -22,4 +22,10 @@ You can use pip to install `phrasebook`.
     pip install phrasebook
 
 
+Now What?
+=========
+
+Check out :ref:`the tutorial <tutorial>`.
+
+
 
