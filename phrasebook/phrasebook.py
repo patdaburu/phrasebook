@@ -4,7 +4,7 @@
 # Created on 3/19/19 by Pat Blair
 """
 .. currentmodule:: phrasebook.phrasebook
-.. moduleauthor:: Pat Blair <pblair@geo-comm.com>
+.. moduleauthor:: Pat Daburu <pat@daburu.net>
 
 Store phrases (SQL, messages, what-have-you) alongside your modules.
 """

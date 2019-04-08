@@ -4,7 +4,7 @@
 # Created on 3/20/19 by Pat Blair
 """
 .. currentmodule:: phrasebook.sql
-.. moduleauthor:: Pat Blair <pblair@geo-comm.com>
+.. moduleauthor:: Pat Daburu <pat@daburu.net>
 
 SQL phrases (y'know... like queries and query fragments and such...)
 """
