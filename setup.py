@@ -58,7 +58,7 @@ setup(
     [console_scripts]
     phrasebook=phrasebook.cli:cli
     """,
-    python_requires=">=0.0.1",
+    python_requires=">=3.6",
     license='MIT',
     author='Pat Daburu',
     author_email='pat@daburu.net',
